@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Académie Stellaire - Visual Novel</title>
+    <title>PAC-MAN SUPER SAIYAN</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700;900&display=swap');
 
         * {
             margin: 0;
@@ -14,1414 +14,935 @@
         }
 
         body {
-            background: #0a0a0f;
-            color: #fff;
-            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
             overflow: hidden;
+        }
+
+        h1 {
+            color: #ffd700;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow:
+                0 0 10px #ffd700,
+                0 0 20px #ffd700,
+                0 0 40px #ff8c00;
+            letter-spacing: 5px;
+        }
+
+        .subtitle {
+            color: #00ffff;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
         }
 
         #game-container {
-            width: 100vw;
-            height: 100vh;
             position: relative;
-            overflow: hidden;
+            border: 4px solid #333;
+            border-radius: 10px;
+            box-shadow:
+                0 0 20px rgba(0, 255, 255, 0.3),
+                inset 0 0 50px rgba(0, 0, 0, 0.5);
+            background: #000;
         }
 
-        /* Backgrounds */
-        .background {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transition: opacity 0.5s ease;
+        #gameCanvas {
+            display: block;
+            border-radius: 6px;
         }
 
-        .bg-academy {
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-        }
-
-        .bg-academy::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(ellipse at 20% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(138,43,226,0.1) 0%, transparent 50%);
-        }
-
-        .bg-library {
-            background: linear-gradient(180deg, #2d1b0e 0%, #3d2817 50%, #1a0f08 100%);
-        }
-
-        .bg-library::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background:
-                repeating-linear-gradient(90deg, rgba(139,69,19,0.3) 0px, rgba(139,69,19,0.3) 50px, transparent 50px, transparent 100px);
-        }
-
-        .bg-kitchen {
-            background: linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 50%, #bdbdbd 100%);
-        }
-
-        .bg-trial {
-            background: linear-gradient(180deg, #1a0000 0%, #330000 50%, #4d0000 100%);
-        }
-
-        .bg-trial::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 30%, rgba(255,0,0,0.2) 0%, transparent 60%);
-        }
-
-        /* Character Sprites */
-        .character-container {
-            position: absolute;
-            bottom: 200px;
+        #ui {
             display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            width: 100%;
-            gap: 20px;
-            transition: all 0.3s ease;
+            justify-content: space-between;
+            width: 560px;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            border: 2px solid #333;
         }
 
-        .character {
-            position: relative;
-            transition: all 0.3s ease;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+        .stat {
+            color: #fff;
+            font-size: 0.9rem;
         }
 
-        .character.speaking {
-            transform: scale(1.05);
-            filter: drop-shadow(0 10px 30px rgba(255,255,255,0.3));
+        .stat-value {
+            color: #ffd700;
+            font-weight: bold;
         }
 
-        .character.dead {
-            filter: grayscale(100%) brightness(0.5);
-        }
-
-        /* Character SVG Designs */
-        .char-sprite {
-            width: 200px;
-            height: 350px;
-        }
-
-        /* Dialogue Box */
-        #dialogue-box {
+        #power-indicator {
             position: absolute;
-            bottom: 20px;
+            top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            max-width: 1000px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(20,20,40,0.95) 100%);
-            border: 3px solid #ffd700;
-            border-radius: 10px;
-            padding: 20px;
-            z-index: 100;
+            color: #ffd700;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            text-shadow: 0 0 20px #ffd700;
+            animation: pulse 0.5s infinite;
         }
 
-        #speaker-name {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
+        #power-indicator.active {
+            opacity: 1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        #start-screen, #game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            border-radius: 6px;
+        }
+
+        #game-over-screen {
+            display: none;
+        }
+
+        .screen-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
             color: #ffd700;
-            margin-bottom: 10px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #ffd700;
+        }
+
+        .screen-subtitle {
+            color: #fff;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            padding: 15px 40px;
+            background: transparent;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        #dialogue-text {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            min-height: 60px;
-        }
-
-        #continue-indicator {
-            position: absolute;
-            bottom: 10px;
-            right: 20px;
-            animation: blink 1s infinite;
-            color: #ffd700;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* Title Screen */
-        #title-screen {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(180deg, #0a0a1a 0%, #1a1a3a 50%, #0a0a1a 100%);
-            z-index: 200;
-        }
-
-        #title-screen h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255,215,0,0.5);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        #title-screen h2 {
-            font-size: 1.5rem;
-            color: #ff4444;
-            margin-bottom: 50px;
-            letter-spacing: 5px;
-        }
-
-        .menu-button {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.3rem;
-            padding: 15px 50px;
-            margin: 10px;
-            background: transparent;
-            border: 2px solid #ffd700;
-            color: #ffd700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-        }
-
-        .menu-button:hover {
-            background: #ffd700;
+        .btn:hover {
+            background: #00ffff;
             color: #000;
-            box-shadow: 0 0 30px rgba(255,215,0,0.5);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
         }
 
-        /* Investigation UI */
-        #investigation-ui {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 50;
-            display: none;
-        }
-
-        #evidence-count {
-            font-family: 'Orbitron', sans-serif;
-            color: #ffd700;
-            font-size: 1.2rem;
-        }
-
-        .clickable-area {
-            position: absolute;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .clickable-area:hover {
-            border-color: #ffd700;
-            box-shadow: 0 0 20px rgba(255,215,0,0.5);
-        }
-
-        /* Evidence Popup */
-        #evidence-popup {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.95);
-            border: 3px solid #ffd700;
-            padding: 30px;
-            border-radius: 10px;
-            z-index: 150;
-            display: none;
-            max-width: 500px;
+        .instructions {
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.7rem;
             text-align: center;
+            line-height: 2;
         }
 
-        #evidence-popup h3 {
+        .instructions span {
             color: #ffd700;
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 15px;
         }
 
-        #evidence-popup p {
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        /* Trial UI */
-        #trial-ui {
-            display: none;
-        }
-
-        .trial-podiums {
-            position: absolute;
-            width: 100%;
-            height: 60%;
-            top: 10%;
-        }
-
-        .trial-character {
-            position: absolute;
-            text-align: center;
-        }
-
-        .trial-character .name-plate {
-            background: #333;
-            color: #fff;
-            padding: 5px 15px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-
-        /* Choices */
-        #choices-container {
-            position: absolute;
-            bottom: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 100;
-        }
-
-        .choice-button {
-            font-family: 'Noto Sans JP', sans-serif;
-            font-size: 1.1rem;
-            padding: 15px 40px;
-            background: rgba(0,0,0,0.8);
-            border: 2px solid #4a9eff;
-            color: #4a9eff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .choice-button:hover {
-            background: #4a9eff;
-            color: #000;
-        }
-
-        /* Evidence Selection */
-        #evidence-selection {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.95);
-            border: 3px solid #ff4444;
-            padding: 30px;
-            border-radius: 10px;
-            z-index: 150;
-            display: none;
-            max-width: 600px;
-        }
-
-        #evidence-selection h3 {
-            color: #ff4444;
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .evidence-item {
-            padding: 15px;
-            margin: 10px 0;
-            background: rgba(50,50,50,0.8);
-            border: 1px solid #666;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .evidence-item:hover {
-            border-color: #ff4444;
-            background: rgba(100,50,50,0.8);
-        }
-
-        .evidence-item h4 {
-            color: #ffd700;
-            margin-bottom: 5px;
-        }
-
-        /* Game Over / Victory Screens */
-        #end-screen {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-        }
-
-        #end-screen.victory {
-            background: linear-gradient(180deg, #001a00 0%, #003300 50%, #001a00 100%);
-        }
-
-        #end-screen.defeat {
-            background: linear-gradient(180deg, #1a0000 0%, #330000 50%, #1a0000 100%);
-        }
-
-        #end-screen h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            margin-bottom: 30px;
-        }
-
-        #end-screen.victory h1 {
-            color: #00ff00;
-        }
-
-        #end-screen.defeat h1 {
-            color: #ff0000;
-        }
-
-        /* Monokuma-like Mascot */
-        .mascot {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 50;
-        }
-
-        /* Screen Flash Effects */
-        .flash {
-            animation: flash 0.5s ease;
-        }
-
-        @keyframes flash {
-            0%, 100% { filter: brightness(1); }
-            50% { filter: brightness(3); }
-        }
-
-        .shake {
-            animation: shake 0.5s ease;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        /* Truth Bullet Animation */
-        .truth-bullet {
-            position: absolute;
-            font-family: 'Orbitron', sans-serif;
+        #final-score {
             font-size: 2rem;
-            color: #ff4444;
-            text-shadow: 0 0 20px #ff0000;
-            animation: truthBullet 1s ease forwards;
-            z-index: 160;
+            color: #00ffff;
+            margin: 20px 0;
         }
 
-        @keyframes truthBullet {
-            0% {
-                left: -200px;
-                top: 50%;
-                opacity: 1;
+        /* Super Saiyan Aura Effect */
+        .saiyan-mode #game-container {
+            box-shadow:
+                0 0 30px rgba(255, 215, 0, 0.5),
+                0 0 60px rgba(255, 215, 0, 0.3),
+                0 0 90px rgba(255, 140, 0, 0.2);
+            animation: saiyanGlow 0.3s infinite alternate;
+        }
+
+        @keyframes saiyanGlow {
+            from {
+                box-shadow:
+                    0 0 30px rgba(255, 215, 0, 0.5),
+                    0 0 60px rgba(255, 215, 0, 0.3);
             }
-            50% {
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%) scale(1.5);
+            to {
+                box-shadow:
+                    0 0 50px rgba(255, 215, 0, 0.7),
+                    0 0 80px rgba(255, 215, 0, 0.5),
+                    0 0 120px rgba(255, 140, 0, 0.3);
             }
-            100% {
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0;
-            }
-        }
-
-        /* Phase Banner */
-        #phase-banner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            color: #ffd700;
-            text-shadow: 0 0 30px rgba(255,215,0,0.8);
-            opacity: 0;
-            z-index: 180;
-            pointer-events: none;
-        }
-
-        .show-banner {
-            animation: showBanner 2s ease forwards;
-        }
-
-        @keyframes showBanner {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
         }
     </style>
 </head>
 <body>
+    <h1>PAC-MAN</h1>
+    <div class="subtitle">SUPER SAIYAN EDITION</div>
+
     <div id="game-container">
-        <!-- Title Screen -->
-        <div id="title-screen">
-            <h1>ACADEMIE STELLAIRE</h1>
-            <h2>KILLING GAME</h2>
-            <svg width="200" height="200" viewBox="0 0 200 200" style="margin-bottom: 30px;">
-                <!-- Mascot: Stellaire (half star, half dark) -->
-                <defs>
-                    <linearGradient id="mascotGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="50%" style="stop-color:#ffd700"/>
-                        <stop offset="50%" style="stop-color:#1a1a1a"/>
-                    </linearGradient>
-                </defs>
-                <polygon points="100,10 120,80 195,80 135,125 155,195 100,155 45,195 65,125 5,80 80,80"
-                    fill="url(#mascotGrad)" stroke="#fff" stroke-width="3"/>
-                <circle cx="70" cy="90" r="15" fill="#fff"/>
-                <circle cx="70" cy="90" r="8" fill="#000"/>
-                <circle cx="130" cy="90" r="15" fill="#ff0000"/>
-                <line x1="120" y1="80" x2="140" y2="100" stroke="#000" stroke-width="3"/>
-                <line x1="140" y1="80" x2="120" y2="100" stroke="#000" stroke-width="3"/>
-                <path d="M 70 120 Q 100 150 130 120" stroke="#000" stroke-width="4" fill="none"/>
-            </svg>
-            <button class="menu-button" onclick="startGame()">COMMENCER</button>
+        <canvas id="gameCanvas" width="560" height="620"></canvas>
+        <div id="power-indicator">SUPER SAIYAN MODE!</div>
+
+        <div id="start-screen">
+            <div class="screen-title">PAC-MAN SSJ</div>
+            <div class="screen-subtitle">Mange les power pellets pour te transformer!</div>
+            <button class="btn" onclick="startGame()">JOUER</button>
+            <div class="instructions">
+                <span>ZQSD</span> ou <span>FLECHES</span> pour se déplacer<br>
+                <span>POWER PELLET</span> = Transformation Super Saiyan!
+            </div>
         </div>
 
-        <!-- Background -->
-        <div id="background" class="background bg-academy"></div>
-
-        <!-- Phase Banner -->
-        <div id="phase-banner"></div>
-
-        <!-- Investigation UI -->
-        <div id="investigation-ui">
-            <div id="evidence-count">PREUVES: <span id="evidence-num">0</span>/6</div>
-        </div>
-
-        <!-- Character Container -->
-        <div id="character-container" class="character-container"></div>
-
-        <!-- Dialogue Box -->
-        <div id="dialogue-box" style="display: none;">
-            <div id="speaker-name"></div>
-            <div id="dialogue-text"></div>
-            <div id="continue-indicator">▼</div>
-        </div>
-
-        <!-- Choices Container -->
-        <div id="choices-container"></div>
-
-        <!-- Evidence Popup -->
-        <div id="evidence-popup">
-            <h3 id="evidence-title"></h3>
-            <p id="evidence-description"></p>
-            <button class="menu-button" onclick="closeEvidencePopup()">COMPRIS</button>
-        </div>
-
-        <!-- Evidence Selection (Trial) -->
-        <div id="evidence-selection">
-            <h3>PRESENTE UNE PREUVE</h3>
-            <div id="evidence-list"></div>
-        </div>
-
-        <!-- End Screen -->
-        <div id="end-screen">
-            <h1 id="end-title"></h1>
-            <p id="end-text" style="font-size: 1.3rem; max-width: 600px; text-align: center; line-height: 1.8; margin-bottom: 30px;"></p>
-            <button class="menu-button" onclick="location.reload()">REJOUER</button>
+        <div id="game-over-screen">
+            <div class="screen-title">GAME OVER</div>
+            <div id="final-score">0</div>
+            <button class="btn" onclick="startGame()">REJOUER</button>
         </div>
     </div>
 
+    <div id="ui">
+        <div class="stat">SCORE: <span class="stat-value" id="score">0</span></div>
+        <div class="stat">LEVEL: <span class="stat-value" id="level">1</span></div>
+        <div class="stat">VIES: <span class="stat-value" id="lives">3</span></div>
+    </div>
+
     <script>
-        // ==================== CHARACTER DATA ====================
-        const characters = {
-            yuki: {
-                name: "Yuki Nakamura",
-                talent: "Détective Ultime",
-                color: "#4a9eff",
-                sprite: `<svg class="char-sprite" viewBox="0 0 200 350">
-                    <!-- Hair -->
-                    <ellipse cx="100" cy="60" rx="55" ry="50" fill="#1a1a2e"/>
-                    <path d="M 45 60 Q 30 120 50 150" stroke="#1a1a2e" stroke-width="20" fill="none"/>
-                    <path d="M 155 60 Q 170 120 150 150" stroke="#1a1a2e" stroke-width="20" fill="none"/>
-                    <!-- Face -->
-                    <ellipse cx="100" cy="80" rx="40" ry="45" fill="#ffecd2"/>
-                    <!-- Eyes -->
-                    <ellipse cx="80" cy="75" rx="10" ry="12" fill="#fff"/>
-                    <ellipse cx="120" cy="75" rx="10" ry="12" fill="#fff"/>
-                    <ellipse cx="80" cy="77" rx="6" ry="8" fill="#4a9eff"/>
-                    <ellipse cx="120" cy="77" rx="6" ry="8" fill="#4a9eff"/>
-                    <ellipse cx="81" cy="75" rx="2" ry="3" fill="#fff"/>
-                    <ellipse cx="121" cy="75" rx="2" ry="3" fill="#fff"/>
-                    <!-- Eyebrows -->
-                    <path d="M 68 60 L 90 63" stroke="#1a1a2e" stroke-width="3"/>
-                    <path d="M 110 63 L 132 60" stroke="#1a1a2e" stroke-width="3"/>
-                    <!-- Mouth -->
-                    <path d="M 90 100 Q 100 108 110 100" stroke="#cc8888" stroke-width="2" fill="none"/>
-                    <!-- Body - Detective Coat -->
-                    <path d="M 60 125 L 40 300 L 80 320 L 100 300 L 120 320 L 160 300 L 140 125" fill="#2a2a4e"/>
-                    <path d="M 70 125 L 70 280" stroke="#ffd700" stroke-width="2"/>
-                    <path d="M 130 125 L 130 280" stroke="#ffd700" stroke-width="2"/>
-                    <!-- Tie -->
-                    <polygon points="95,125 105,125 108,160 100,180 92,160" fill="#ffd700"/>
-                    <!-- Collar -->
-                    <path d="M 70 125 L 100 145 L 130 125" stroke="#1a1a3e" stroke-width="8" fill="none"/>
-                </svg>`
-            },
-            sakura: {
-                name: "Sakura Hayashi",
-                talent: "Chanteuse Ultime",
-                color: "#ff69b4",
-                sprite: `<svg class="char-sprite" viewBox="0 0 200 350">
-                    <!-- Hair -->
-                    <ellipse cx="100" cy="55" rx="60" ry="45" fill="#ff69b4"/>
-                    <path d="M 40 55 Q 20 150 45 200" stroke="#ff69b4" stroke-width="25" fill="none"/>
-                    <path d="M 160 55 Q 180 150 155 200" stroke="#ff69b4" stroke-width="25" fill="none"/>
-                    <circle cx="55" cy="40" r="15" fill="#ff69b4"/>
-                    <circle cx="145" cy="40" r="15" fill="#ff69b4"/>
-                    <!-- Face -->
-                    <ellipse cx="100" cy="80" rx="40" ry="45" fill="#ffecd2"/>
-                    <!-- Eyes -->
-                    <ellipse cx="80" cy="75" rx="12" ry="14" fill="#fff"/>
-                    <ellipse cx="120" cy="75" rx="12" ry="14" fill="#fff"/>
-                    <ellipse cx="80" cy="77" rx="7" ry="9" fill="#90EE90"/>
-                    <ellipse cx="120" cy="77" rx="7" ry="9" fill="#90EE90"/>
-                    <ellipse cx="82" cy="74" rx="3" ry="4" fill="#fff"/>
-                    <ellipse cx="122" cy="74" rx="3" ry="4" fill="#fff"/>
-                    <!-- Blush -->
-                    <ellipse cx="65" cy="90" rx="10" ry="5" fill="#ffb6c1" opacity="0.6"/>
-                    <ellipse cx="135" cy="90" rx="10" ry="5" fill="#ffb6c1" opacity="0.6"/>
-                    <!-- Mouth -->
-                    <ellipse cx="100" cy="102" rx="8" ry="5" fill="#ff6b6b"/>
-                    <!-- Body - Idol Dress -->
-                    <path d="M 60 125 L 30 320 L 100 340 L 170 320 L 140 125" fill="#ff1493"/>
-                    <path d="M 60 125 L 100 200 L 140 125" fill="#ff69b4"/>
-                    <!-- Frills -->
-                    <path d="M 30 250 Q 50 240 70 250 Q 90 240 110 250 Q 130 240 150 250 Q 170 240 170 250" stroke="#fff" stroke-width="5" fill="none"/>
-                    <!-- Star accessory -->
-                    <polygon points="100,130 103,138 112,138 105,143 108,152 100,147 92,152 95,143 88,138 97,138" fill="#ffd700"/>
-                </svg>`
-            },
-            kenji: {
-                name: "Kenji Tanaka",
-                talent: "Athlète Ultime",
-                color: "#ff6b35",
-                sprite: `<svg class="char-sprite" viewBox="0 0 200 350">
-                    <!-- Hair -->
-                    <ellipse cx="100" cy="50" rx="45" ry="35" fill="#8B4513"/>
-                    <rect x="55" y="35" width="90" height="25" fill="#8B4513"/>
-                    <!-- Face -->
-                    <ellipse cx="100" cy="80" rx="42" ry="48" fill="#e0c4a8"/>
-                    <!-- Eyes -->
-                    <ellipse cx="78" cy="75" rx="10" ry="8" fill="#fff"/>
-                    <ellipse cx="122" cy="75" rx="10" ry="8" fill="#fff"/>
-                    <ellipse cx="78" cy="76" rx="6" ry="5" fill="#8B4513"/>
-                    <ellipse cx="122" cy="76" rx="6" ry="5" fill="#8B4513"/>
-                    <!-- Strong eyebrows -->
-                    <path d="M 65 62 L 90 65" stroke="#5D3A1A" stroke-width="5"/>
-                    <path d="M 110 65 L 135 62" stroke="#5D3A1A" stroke-width="5"/>
-                    <!-- Mouth - determined -->
-                    <path d="M 85 105 L 115 105" stroke="#aa7766" stroke-width="3"/>
-                    <!-- Body - Athletic wear -->
-                    <rect x="50" y="125" width="100" height="120" fill="#ff6b35"/>
-                    <!-- Muscles indication -->
-                    <path d="M 30 130 Q 40 200 50 250 L 50 130" fill="#e0c4a8"/>
-                    <path d="M 170 130 Q 160 200 150 250 L 150 130" fill="#e0c4a8"/>
-                    <!-- Tank top straps -->
-                    <rect x="65" y="125" width="15" height="40" fill="#fff"/>
-                    <rect x="120" y="125" width="15" height="40" fill="#fff"/>
-                    <!-- Shorts -->
-                    <rect x="50" y="245" width="45" height="80" fill="#333"/>
-                    <rect x="105" y="245" width="45" height="80" fill="#333"/>
-                    <!-- Number -->
-                    <text x="100" y="200" text-anchor="middle" fill="#fff" font-size="40" font-weight="bold">7</text>
-                </svg>`
-            },
-            mei: {
-                name: "Mei Lin",
-                talent: "Programmeuse Ultime",
-                color: "#9b59b6",
-                sprite: `<svg class="char-sprite" viewBox="0 0 200 350">
-                    <!-- Hair -->
-                    <ellipse cx="100" cy="55" rx="50" ry="40" fill="#1a1a1a"/>
-                    <path d="M 50 55 L 40 150" stroke="#1a1a1a" stroke-width="15"/>
-                    <path d="M 150 55 L 160 150" stroke="#1a1a1a" stroke-width="15"/>
-                    <!-- Ponytail -->
-                    <ellipse cx="160" cy="60" rx="20" ry="30" fill="#1a1a1a"/>
-                    <path d="M 155 85 Q 180 150 160 200" stroke="#1a1a1a" stroke-width="15" fill="none"/>
-                    <!-- Face -->
-                    <ellipse cx="100" cy="80" rx="38" ry="43" fill="#ffecd2"/>
-                    <!-- Glasses -->
-                    <rect x="62" y="65" width="30" height="25" rx="5" fill="none" stroke="#333" stroke-width="3"/>
-                    <rect x="108" y="65" width="30" height="25" rx="5" fill="none" stroke="#333" stroke-width="3"/>
-                    <line x1="92" y1="77" x2="108" y2="77" stroke="#333" stroke-width="3"/>
-                    <!-- Eyes behind glasses -->
-                    <ellipse cx="77" cy="77" rx="8" ry="10" fill="#fff"/>
-                    <ellipse cx="123" cy="77" rx="8" ry="10" fill="#fff"/>
-                    <ellipse cx="77" cy="78" rx="5" ry="6" fill="#9b59b6"/>
-                    <ellipse cx="123" cy="78" rx="5" ry="6" fill="#9b59b6"/>
-                    <!-- Mouth - shy -->
-                    <path d="M 93 100 Q 100 103 107 100" stroke="#cc9999" stroke-width="2" fill="none"/>
-                    <!-- Body - Hoodie -->
-                    <path d="M 55 125 L 40 320 L 160 320 L 145 125" fill="#9b59b6"/>
-                    <!-- Hood -->
-                    <ellipse cx="100" cy="130" rx="50" ry="20" fill="#7d3c98"/>
-                    <!-- Pocket -->
-                    <rect x="70" y="220" width="60" height="40" rx="5" fill="#7d3c98"/>
-                    <!-- Code symbol -->
-                    <text x="100" y="190" text-anchor="middle" fill="#fff" font-size="24" font-family="monospace">&lt;/&gt;</text>
-                </svg>`
-            },
-            ryo: {
-                name: "Ryo Ishida",
-                talent: "Écrivain Ultime",
-                color: "#c0c0c0",
-                sprite: `<svg class="char-sprite" viewBox="0 0 200 350">
-                    <!-- Hair - long white -->
-                    <ellipse cx="100" cy="50" rx="55" ry="40" fill="#e8e8e8"/>
-                    <path d="M 45 50 Q 25 150 40 250" stroke="#e8e8e8" stroke-width="20" fill="none"/>
-                    <path d="M 155 50 Q 175 150 160 250" stroke="#e8e8e8" stroke-width="20" fill="none"/>
-                    <path d="M 70 30 L 60 60" stroke="#e8e8e8" stroke-width="15"/>
-                    <path d="M 130 30 L 140 60" stroke="#e8e8e8" stroke-width="15"/>
-                    <!-- Face -->
-                    <ellipse cx="100" cy="80" rx="38" ry="45" fill="#f5e6d3"/>
-                    <!-- Eyes - mysterious red -->
-                    <ellipse cx="80" cy="75" rx="9" ry="11" fill="#fff"/>
-                    <ellipse cx="120" cy="75" rx="9" ry="11" fill="#fff"/>
-                    <ellipse cx="80" cy="76" rx="5" ry="7" fill="#8B0000"/>
-                    <ellipse cx="120" cy="76" rx="5" ry="7" fill="#8B0000"/>
-                    <ellipse cx="81" cy="74" rx="2" ry="2" fill="#fff"/>
-                    <ellipse cx="121" cy="74" rx="2" ry="2" fill="#fff"/>
-                    <!-- Thin eyebrows -->
-                    <path d="M 70 63 L 88 66" stroke="#aaa" stroke-width="2"/>
-                    <path d="M 112 66 L 130 63" stroke="#aaa" stroke-width="2"/>
-                    <!-- Mouth - smirk -->
-                    <path d="M 90 102 Q 100 100 110 105" stroke="#aa8888" stroke-width="2" fill="none"/>
-                    <!-- Body - Long coat -->
-                    <path d="M 55 125 L 30 340 L 100 350 L 170 340 L 145 125" fill="#1a1a1a"/>
-                    <!-- Coat collar -->
-                    <path d="M 60 125 L 100 160 L 140 125" fill="#2a2a2a"/>
-                    <!-- Scarf -->
-                    <path d="M 70 130 Q 100 145 130 130" stroke="#8B0000" stroke-width="12" fill="none"/>
-                    <path d="M 85 140 L 80 200" stroke="#8B0000" stroke-width="10"/>
-                    <!-- Quill accessory -->
-                    <path d="M 145 150 Q 165 130 175 140 Q 165 145 145 170" fill="#ffd700"/>
-                </svg>`
-            },
-            akira: {
-                name: "Akira Suzuki",
-                talent: "Cuisinier Ultime",
-                color: "#f39c12",
-                sprite: `<svg class="char-sprite" viewBox="0 0 200 350">
-                    <!-- Chef hat -->
-                    <ellipse cx="100" cy="25" rx="45" ry="25" fill="#fff"/>
-                    <rect x="55" y="20" width="90" height="40" fill="#fff"/>
-                    <ellipse cx="100" cy="60" rx="50" ry="10" fill="#f0f0f0"/>
-                    <!-- Hair -->
-                    <path d="M 60 60 Q 55 75 60 90" stroke="#f4d03f" stroke-width="10" fill="none"/>
-                    <path d="M 140 60 Q 145 75 140 90" stroke="#f4d03f" stroke-width="10" fill="none"/>
-                    <!-- Face -->
-                    <ellipse cx="100" cy="90" rx="40" ry="42" fill="#ffecd2"/>
-                    <!-- Eyes - friendly -->
-                    <ellipse cx="80" cy="85" rx="10" ry="12" fill="#fff"/>
-                    <ellipse cx="120" cy="85" rx="10" ry="12" fill="#fff"/>
-                    <ellipse cx="80" cy="87" rx="6" ry="7" fill="#2ecc71"/>
-                    <ellipse cx="120" cy="87" rx="6" ry="7" fill="#2ecc71"/>
-                    <ellipse cx="82" cy="84" rx="2" ry="3" fill="#fff"/>
-                    <ellipse cx="122" cy="84" rx="2" ry="3" fill="#fff"/>
-                    <!-- Eyebrows - friendly -->
-                    <path d="M 70 72 Q 80 70 90 73" stroke="#c9a227" stroke-width="3" fill="none"/>
-                    <path d="M 110 73 Q 120 70 130 72" stroke="#c9a227" stroke-width="3" fill="none"/>
-                    <!-- Big smile -->
-                    <path d="M 80 105 Q 100 120 120 105" stroke="#cc8888" stroke-width="3" fill="#ffcccc"/>
-                    <!-- Body - Chef uniform -->
-                    <rect x="50" y="135" width="100" height="180" fill="#fff"/>
-                    <!-- Double buttons -->
-                    <circle cx="75" cy="170" r="5" fill="#333"/>
-                    <circle cx="75" cy="200" r="5" fill="#333"/>
-                    <circle cx="75" cy="230" r="5" fill="#333"/>
-                    <circle cx="125" cy="170" r="5" fill="#333"/>
-                    <circle cx="125" cy="200" r="5" fill="#333"/>
-                    <circle cx="125" cy="230" r="5" fill="#333"/>
-                    <!-- Apron -->
-                    <rect x="60" y="180" width="80" height="130" fill="#f0f0f0"/>
-                    <rect x="60" y="180" width="80" height="5" fill="#e74c3c"/>
-                    <!-- Neckerchief -->
-                    <polygon points="100,135 80,155 100,175 120,155" fill="#e74c3c"/>
-                </svg>`
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game Constants
+        const TILE_SIZE = 20;
+        const COLS = 28;
+        const ROWS = 31;
+
+        // Colors
+        const COLORS = {
+            wall: '#1a1aff',
+            wallGlow: '#4444ff',
+            dot: '#ffb8ff',
+            powerPellet: '#ffb8ff',
+            background: '#000'
+        };
+
+        // Ghost colors
+        const GHOST_COLORS = {
+            blinky: { body: '#ff0000', eye: '#fff' },
+            pinky: { body: '#ffb8ff', eye: '#fff' },
+            inky: { body: '#00ffff', eye: '#fff' },
+            clyde: { body: '#ffb852', eye: '#fff' }
+        };
+
+        // Map: 0=empty, 1=wall, 2=dot, 3=power pellet, 4=ghost house
+        const originalMap = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1],
+            [1,3,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,3,1],
+            [1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,2,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,2,1],
+            [1,2,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,2,1],
+            [1,2,2,2,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,2,2,1],
+            [1,1,1,1,1,1,2,1,1,1,1,1,0,1,1,0,1,1,1,1,1,2,1,1,1,1,1,1],
+            [0,0,0,0,0,1,2,1,1,1,1,1,0,1,1,0,1,1,1,1,1,2,1,0,0,0,0,0],
+            [0,0,0,0,0,1,2,1,1,0,0,0,0,0,0,0,0,0,0,1,1,2,1,0,0,0,0,0],
+            [0,0,0,0,0,1,2,1,1,0,1,1,1,4,4,1,1,1,0,1,1,2,1,0,0,0,0,0],
+            [1,1,1,1,1,1,2,1,1,0,1,4,4,4,4,4,4,1,0,1,1,2,1,1,1,1,1,1],
+            [0,0,0,0,0,0,2,0,0,0,1,4,4,4,4,4,4,1,0,0,0,2,0,0,0,0,0,0],
+            [1,1,1,1,1,1,2,1,1,0,1,4,4,4,4,4,4,1,0,1,1,2,1,1,1,1,1,1],
+            [0,0,0,0,0,1,2,1,1,0,1,1,1,1,1,1,1,1,0,1,1,2,1,0,0,0,0,0],
+            [0,0,0,0,0,1,2,1,1,0,0,0,0,0,0,0,0,0,0,1,1,2,1,0,0,0,0,0],
+            [0,0,0,0,0,1,2,1,1,0,1,1,1,1,1,1,1,1,0,1,1,2,1,0,0,0,0,0],
+            [1,1,1,1,1,1,2,1,1,0,1,1,1,1,1,1,1,1,0,1,1,2,1,1,1,1,1,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1],
+            [1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1],
+            [1,3,2,2,1,1,2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,1,1,2,2,3,1],
+            [1,1,1,2,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,2,1,1,1],
+            [1,1,1,2,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,2,1,1,1],
+            [1,2,2,2,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,2,2,1],
+            [1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1],
+            [1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        let map = [];
+        let pacman, ghosts, score, lives, level, gameLoop, dotsRemaining;
+        let superSaiyanMode = false;
+        let superSaiyanTimer = 0;
+        let particles = [];
+        let auraParticles = [];
+
+        // Pacman object
+        class Pacman {
+            constructor() {
+                this.reset();
             }
-        };
 
-        // ==================== GAME STATE ====================
-        let gameState = {
-            phase: 'title', // title, prologue, daily, investigation, trial, end
-            currentScene: 0,
-            dialogueIndex: 0,
-            evidence: [],
-            trialProgress: 0,
-            accusation: null
-        };
-
-        const evidenceData = {
-            body: {
-                name: "État du corps",
-                description: "Sakura a été trouvée morte dans la bibliothèque. Son visage montre des signes d'empoisonnement: lèvres bleutées, expression de douleur. Aucune blessure externe visible."
-            },
-            macaron: {
-                name: "Macaron à moitié mangé",
-                description: "Un macaron rose à moitié mangé trouvé près du corps. Il dégage une légère odeur d'amande amère... caractéristique du cyanure."
-            },
-            book: {
-                name: "Livre de Sakura",
-                description: "'Les Secrets des Grands Chefs' - Sakura était en train de lire ce livre. Plusieurs passages sur les recettes d'Akira sont soulignés avec des points d'interrogation."
-            },
-            poison: {
-                name: "Flacon de poison",
-                description: "Un petit flacon vide trouvé caché derrière les ustensiles de cuisine. L'étiquette indique 'Cyanure de potassium - Poison pour nuisibles'."
-            },
-            testimony: {
-                name: "Témoignage de Mei",
-                description: "Mei affirme avoir vu Akira donner un macaron à Sakura vers 14h, en disant 'J'ai fait ça spécialement pour toi'. Sakura est partie vers la bibliothèque juste après."
-            },
-            diary: {
-                name: "Journal de Sakura",
-                description: "Une entrée récente: 'J'ai découvert quelque chose de choquant sur Akira. Toutes ses recettes 'originales' sont copiées d'un vieux livre de cuisine de sa grand-mère décédée. C'est du plagiat! Je dois lui en parler demain...'"
+            reset() {
+                this.x = 14 * TILE_SIZE;
+                this.y = 23 * TILE_SIZE + TILE_SIZE / 2;
+                this.direction = { x: 0, y: 0 };
+                this.nextDirection = { x: 0, y: 0 };
+                this.speed = 3;
+                this.mouthAngle = 0;
+                this.mouthDirection = 1;
+                this.angle = 0;
             }
-        };
 
-        // ==================== STORY SCRIPTS ====================
-        const story = {
-            prologue: [
-                { speaker: "???", text: "Bienvenue, chers étudiants d'élite, à l'Académie Stellaire!", chars: [] },
-                { speaker: "???", text: "Je suis Stellaire, votre adorable mascotte et directeur! ★", chars: [] },
-                { speaker: "Stellaire", text: "Vous êtes les 6 étudiants les plus talentueux du pays. Félicitations!", chars: [] },
-                { speaker: "Stellaire", text: "Mais voilà le twist... Vous êtes enfermés ici! Kihihihi! ★", chars: [] },
-                { speaker: "Stellaire", text: "Pour sortir, l'un d'entre vous devra... TUER un autre étudiant!", chars: [] },
-                { speaker: "Stellaire", text: "Et ne pas se faire attraper lors du procès! Bonne chance! ★", chars: [] },
-                { speaker: "Yuki", text: "(Un jeu de massacre...? C'est insensé. Je dois protéger tout le monde.)", chars: ["yuki"] },
-                { speaker: "Sakura", text: "C'est horrible! On ne peut pas faire ça!", chars: ["yuki", "sakura"] },
-                { speaker: "Kenji", text: "Tch! Comme si j'allais suivre les règles d'une stupide mascotte!", chars: ["kenji", "sakura"] },
-                { speaker: "Mei", text: "C-C'est forcément une blague... n'est-ce pas?", chars: ["mei"] },
-                { speaker: "Ryo", text: "Intéressant... Une situation digne d'un roman policier.", chars: ["ryo"] },
-                { speaker: "Akira", text: "Haha! Pas de panique! Je vais nous préparer un bon repas pour nous calmer!", chars: ["akira"] },
-                { speaker: "Yuki", text: "Restons calmes et travaillons ensemble. Personne ne mourra.", chars: ["yuki"] }
-            ],
+            update() {
+                // Try to change direction
+                const nextTileX = Math.floor((this.x + this.nextDirection.x * TILE_SIZE) / TILE_SIZE);
+                const nextTileY = Math.floor((this.y + this.nextDirection.y * TILE_SIZE) / TILE_SIZE);
 
-            daily: [
-                { speaker: "", text: "Trois jours passent paisiblement...", chars: [] },
-                { speaker: "Akira", text: "Sakura! J'ai préparé des macarons spéciaux pour toi!", chars: ["akira", "sakura"], bg: "academy" },
-                { speaker: "Sakura", text: "Oh, merci Akira! Tu es tellement gentil!", chars: ["akira", "sakura"] },
-                { speaker: "Akira", text: "De rien! J'espère que tu les apprécieras... vraiment.", chars: ["akira"] },
-                { speaker: "Mei", text: "(Je les ai vus depuis le couloir... Akira avait un drôle de regard.)", chars: ["mei"] },
-                { speaker: "", text: "Quelques heures plus tard...", chars: [] }
-            ],
-
-            discovery: [
-                { speaker: "Kenji", text: "HÉ! VENEZ VITE! C'EST SAKURA!", chars: ["kenji"], bg: "library" },
-                { speaker: "Yuki", text: "Qu'est-ce qui se-- Non... SAKURA!", chars: ["yuki", "kenji"] },
-                { speaker: "", text: "Sakura gît au sol de la bibliothèque, immobile. Ses lèvres sont bleutées.", chars: ["sakura_dead"] },
-                { speaker: "Mei", text: "Elle... Elle est...?", chars: ["mei", "yuki"] },
-                { speaker: "Ryo", text: "Morte. Sans aucun doute. Regardez ses lèvres - empoisonnement.", chars: ["ryo"] },
-                { speaker: "Akira", text: "Non! C'est impossible! Sakura!", chars: ["akira"] },
-                { speaker: "Stellaire", text: "Ding dong! Un corps a été découvert! ★", chars: [] },
-                { speaker: "Stellaire", text: "Après une phase d'investigation, nous tiendrons un PROCÈS!", chars: [] },
-                { speaker: "Stellaire", text: "Trouvez le coupable, ou c'est lui qui gagne et vous mourrez tous! ★", chars: [] },
-                { speaker: "Yuki", text: "(Je dois trouver la vérité. Pour Sakura.)", chars: ["yuki"] }
-            ],
-
-            investigation_intro: [
-                { speaker: "Yuki", text: "(Je dois examiner les lieux et rassembler des preuves.)", chars: ["yuki"], bg: "library" }
-            ],
-
-            trial_intro: [
-                { speaker: "Stellaire", text: "L'investigation est terminée! Direction la salle du procès! ★", chars: [], bg: "trial" },
-                { speaker: "Yuki", text: "(J'ai rassemblé assez de preuves. Il est temps de trouver le coupable.)", chars: ["yuki"] }
-            ],
-
-            trial: [
-                {
-                    speaker: "Kenji",
-                    text: "Bon, c'est évident non? C'est Ryo! Il est toujours bizarre et silencieux!",
-                    chars: ["kenji", "ryo"]
-                },
-                {
-                    speaker: "Ryo",
-                    text: "Quelle accusation pathétique. Être 'bizarre' n'est pas une preuve.",
-                    chars: ["ryo"]
-                },
-                {
-                    speaker: "Mei",
-                    text: "E-Euh... Je dois dire quelque chose. J'ai vu Akira donner un macaron à Sakura...",
-                    chars: ["mei", "akira"]
-                },
-                {
-                    speaker: "Akira",
-                    text: "Oui, et alors? Je cuisine pour tout le monde! C'est mon talent!",
-                    chars: ["akira"]
-                },
-                {
-                    speaker: "Yuki",
-                    text: "Le macaron trouvé près du corps sentait l'amande amère. C'est du cyanure.",
-                    chars: ["yuki"]
-                },
-                {
-                    speaker: "Akira",
-                    text: "Q-Quoi?! N'importe qui aurait pu empoisonner ce macaron après que je l'ai donné!",
-                    chars: ["akira"]
-                },
-                {
-                    speaker: "Yuki",
-                    text: "Vraiment? Alors explique le flacon de poison trouvé caché dans la cuisine.",
-                    chars: ["yuki", "akira"],
-                    evidence_required: "poison"
-                },
-                {
-                    speaker: "Akira",
-                    text: "Je... C'est pour les nuisibles! On a des rats dans l'académie!",
-                    chars: ["akira"]
-                },
-                {
-                    speaker: "Ryo",
-                    text: "Intéressant alibi. Mais pourquoi le cacher derrière les ustensiles?",
-                    chars: ["ryo"]
-                },
-                {
-                    speaker: "Yuki",
-                    text: "Et le journal de Sakura révèle quelque chose d'intéressant sur toi, Akira.",
-                    chars: ["yuki"],
-                    evidence_required: "diary"
-                },
-                {
-                    speaker: "Akira",
-                    text: "S-Son journal? Qu'est-ce qu'elle a écrit?!",
-                    chars: ["akira"]
-                },
-                {
-                    speaker: "Yuki",
-                    text: "Elle avait découvert que toutes tes 'recettes originales' sont plagiées.",
-                    chars: ["yuki"]
-                },
-                {
-                    speaker: "Yuki",
-                    text: "Si ça se savait, ta réputation de 'Cuisinier Ultime' serait détruite.",
-                    chars: ["yuki", "akira"]
-                },
-                {
-                    speaker: "Akira",
-                    text: "...",
-                    chars: ["akira"]
-                },
-                {
-                    speaker: "Yuki",
-                    text: "Tu as donné ce macaron empoisonné à Sakura pour la faire taire.",
-                    chars: ["yuki"]
-                },
-                {
-                    type: "accusation",
-                    speaker: "Stellaire",
-                    text: "Il est temps de VOTER! Qui est le coupable? ★",
-                    chars: [],
-                    choices: ["kenji", "mei", "ryo", "akira"]
+                if (this.canMove(nextTileX, nextTileY)) {
+                    this.direction = { ...this.nextDirection };
                 }
-            ],
 
-            trial_correct: [
-                { speaker: "Akira", text: "...", chars: ["akira"] },
-                { speaker: "Akira", text: "Haha... Hahahaha...", chars: ["akira"] },
-                { speaker: "Akira", text: "Vous avez raison. C'est moi.", chars: ["akira"] },
-                { speaker: "Akira", text: "Ces recettes... c'était tout ce que j'avais. Tout ce qui faisait de moi quelqu'un de spécial.", chars: ["akira"] },
-                { speaker: "Akira", text: "Quand Sakura a découvert la vérité... j'ai paniqué.", chars: ["akira"] },
-                { speaker: "Akira", text: "Je ne voulais pas... être un imposteur aux yeux de tous.", chars: ["akira"] },
-                { speaker: "Mei", text: "Akira...", chars: ["mei"] },
-                { speaker: "Stellaire", text: "Le verdict est correct! Le coupable est Akira Suzuki! ★", chars: [] },
-                { speaker: "Stellaire", text: "Et maintenant... place à la PUNITION! ★", chars: [] },
-                { speaker: "Yuki", text: "(Justice a été rendue pour Sakura... mais à quel prix?)", chars: ["yuki"] }
-            ],
+                // Move
+                const newX = this.x + this.direction.x * this.speed;
+                const newY = this.y + this.direction.y * this.speed;
 
-            trial_wrong: [
-                { speaker: "Stellaire", text: "MAUVAISE RÉPONSE! ★", chars: [] },
-                { speaker: "Stellaire", text: "Le vrai coupable était AKIRA! Et vous l'avez laissé s'en sortir!", chars: [] },
-                { speaker: "Stellaire", text: "Comme promis, le coupable gagne et vous... PERDEZ! ★", chars: [] },
-                { speaker: "Yuki", text: "(Non... J'ai échoué... Sakura... Je suis désolé...)", chars: ["yuki"] }
-            ]
-        };
+                const tileX = Math.floor(newX / TILE_SIZE);
+                const tileY = Math.floor(newY / TILE_SIZE);
 
-        // ==================== GAME FUNCTIONS ====================
+                if (this.canMove(tileX, tileY)) {
+                    this.x = newX;
+                    this.y = newY;
+                }
+
+                // Tunnel wrap
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+
+                // Update mouth animation
+                this.mouthAngle += 0.15 * this.mouthDirection;
+                if (this.mouthAngle >= 0.5 || this.mouthAngle <= 0) {
+                    this.mouthDirection *= -1;
+                }
+
+                // Update angle based on direction
+                if (this.direction.x === 1) this.angle = 0;
+                if (this.direction.x === -1) this.angle = Math.PI;
+                if (this.direction.y === -1) this.angle = -Math.PI / 2;
+                if (this.direction.y === 1) this.angle = Math.PI / 2;
+
+                // Eat dots
+                this.eatDot();
+
+                // Generate aura particles in Super Saiyan mode
+                if (superSaiyanMode && Math.random() < 0.5) {
+                    this.generateAuraParticle();
+                }
+            }
+
+            canMove(tileX, tileY) {
+                if (tileX < 0 || tileX >= COLS || tileY < 0 || tileY >= ROWS) return true;
+                return map[tileY] && map[tileY][tileX] !== 1;
+            }
+
+            eatDot() {
+                const tileX = Math.floor(this.x / TILE_SIZE);
+                const tileY = Math.floor(this.y / TILE_SIZE);
+
+                if (tileY >= 0 && tileY < ROWS && tileX >= 0 && tileX < COLS) {
+                    if (map[tileY][tileX] === 2) {
+                        map[tileY][tileX] = 0;
+                        score += 10;
+                        dotsRemaining--;
+                        updateUI();
+                    } else if (map[tileY][tileX] === 3) {
+                        map[tileY][tileX] = 0;
+                        score += 50;
+                        dotsRemaining--;
+                        activateSuperSaiyan();
+                        updateUI();
+                    }
+                }
+            }
+
+            generateAuraParticle() {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 15 + Math.random() * 10;
+                auraParticles.push({
+                    x: this.x + Math.cos(angle) * distance,
+                    y: this.y + Math.sin(angle) * distance,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: -2 - Math.random() * 3,
+                    life: 1,
+                    size: 3 + Math.random() * 5
+                });
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+
+                if (superSaiyanMode) {
+                    // Draw Super Saiyan aura
+                    const gradient = ctx.createRadialGradient(0, 0, 5, 0, 0, 35);
+                    gradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
+                    gradient.addColorStop(0.5, 'rgba(255, 180, 0, 0.4)');
+                    gradient.addColorStop(1, 'rgba(255, 140, 0, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 35, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Draw spiky Super Saiyan hair
+                    ctx.fillStyle = '#ffd700';
+                    ctx.shadowColor = '#ffd700';
+                    ctx.shadowBlur = 20;
+
+                    // Main body (golden)
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 12, this.mouthAngle, Math.PI * 2 - this.mouthAngle);
+                    ctx.lineTo(0, 0);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Draw spiky hair
+                    ctx.fillStyle = '#ffd700';
+                    const spikes = 7;
+                    for (let i = 0; i < spikes; i++) {
+                        const spikeAngle = (Math.PI * 0.7) + (i / spikes) * Math.PI * 0.6 - Math.PI / 2;
+                        const spikeLength = 12 + Math.sin(Date.now() / 100 + i) * 4;
+                        ctx.beginPath();
+                        ctx.moveTo(Math.cos(spikeAngle - 0.2) * 10, Math.sin(spikeAngle - 0.2) * 10);
+                        ctx.lineTo(Math.cos(spikeAngle) * (12 + spikeLength), Math.sin(spikeAngle) * (12 + spikeLength));
+                        ctx.lineTo(Math.cos(spikeAngle + 0.2) * 10, Math.sin(spikeAngle + 0.2) * 10);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+
+                    // Intense eyes
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#00ff00';
+                    ctx.beginPath();
+                    ctx.arc(3, -4, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#000';
+                    ctx.beginPath();
+                    ctx.arc(4, -4, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Eyebrow (angry)
+                    ctx.strokeStyle = '#ffd700';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(-1, -8);
+                    ctx.lineTo(7, -6);
+                    ctx.stroke();
+
+                } else {
+                    // Normal Pacman
+                    // Glow effect
+                    ctx.shadowColor = '#ffff00';
+                    ctx.shadowBlur = 15;
+
+                    // Body
+                    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 12);
+                    gradient.addColorStop(0, '#ffff00');
+                    gradient.addColorStop(0.7, '#ffcc00');
+                    gradient.addColorStop(1, '#ff9900');
+                    ctx.fillStyle = gradient;
+
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 12, this.mouthAngle, Math.PI * 2 - this.mouthAngle);
+                    ctx.lineTo(0, 0);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Eye
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#000';
+                    ctx.beginPath();
+                    ctx.arc(3, -5, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        // Ghost class
+        class Ghost {
+            constructor(name, startX, startY) {
+                this.name = name;
+                this.startX = startX;
+                this.startY = startY;
+                this.reset();
+            }
+
+            reset() {
+                this.x = this.startX;
+                this.y = this.startY;
+                this.direction = { x: 0, y: -1 };
+                this.speed = 2;
+                this.scared = false;
+                this.eaten = false;
+                this.eyeOffset = { x: 0, y: 0 };
+            }
+
+            update() {
+                if (this.eaten) {
+                    // Return to ghost house
+                    const homeX = 14 * TILE_SIZE;
+                    const homeY = 14 * TILE_SIZE;
+                    const dx = homeX - this.x;
+                    const dy = homeY - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 5) {
+                        this.eaten = false;
+                        this.scared = false;
+                    } else {
+                        this.x += (dx / dist) * 4;
+                        this.y += (dy / dist) * 4;
+                    }
+                    return;
+                }
+
+                // Update scared state
+                this.scared = superSaiyanMode;
+
+                // AI Movement
+                if (Math.random() < 0.02 || this.isAtIntersection()) {
+                    this.chooseDirection();
+                }
+
+                const newX = this.x + this.direction.x * this.speed;
+                const newY = this.y + this.direction.y * this.speed;
+                const tileX = Math.floor(newX / TILE_SIZE);
+                const tileY = Math.floor(newY / TILE_SIZE);
+
+                if (this.canMove(tileX, tileY)) {
+                    this.x = newX;
+                    this.y = newY;
+                } else {
+                    this.chooseDirection();
+                }
+
+                // Tunnel wrap
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+
+                // Eye tracking
+                const dx = pacman.x - this.x;
+                const dy = pacman.y - this.y;
+                const maxOffset = 3;
+                this.eyeOffset.x = Math.max(-maxOffset, Math.min(maxOffset, dx / 20));
+                this.eyeOffset.y = Math.max(-maxOffset, Math.min(maxOffset, dy / 20));
+            }
+
+            isAtIntersection() {
+                const tileX = Math.floor(this.x / TILE_SIZE);
+                const tileY = Math.floor(this.y / TILE_SIZE);
+                let paths = 0;
+                if (this.canMove(tileX + 1, tileY)) paths++;
+                if (this.canMove(tileX - 1, tileY)) paths++;
+                if (this.canMove(tileX, tileY + 1)) paths++;
+                if (this.canMove(tileX, tileY - 1)) paths++;
+                return paths > 2;
+            }
+
+            chooseDirection() {
+                const directions = [
+                    { x: 1, y: 0 },
+                    { x: -1, y: 0 },
+                    { x: 0, y: 1 },
+                    { x: 0, y: -1 }
+                ];
+
+                const validDirs = directions.filter(d => {
+                    const tileX = Math.floor((this.x + d.x * TILE_SIZE) / TILE_SIZE);
+                    const tileY = Math.floor((this.y + d.y * TILE_SIZE) / TILE_SIZE);
+                    return this.canMove(tileX, tileY);
+                });
+
+                if (validDirs.length === 0) return;
+
+                if (this.scared) {
+                    // Run away from Pacman
+                    validDirs.sort((a, b) => {
+                        const distA = Math.abs((this.x + a.x * 100) - pacman.x) + Math.abs((this.y + a.y * 100) - pacman.y);
+                        const distB = Math.abs((this.x + b.x * 100) - pacman.x) + Math.abs((this.y + b.y * 100) - pacman.y);
+                        return distB - distA;
+                    });
+                } else {
+                    // Chase Pacman (with some randomness)
+                    if (Math.random() < 0.7) {
+                        validDirs.sort((a, b) => {
+                            const distA = Math.abs((this.x + a.x * 100) - pacman.x) + Math.abs((this.y + a.y * 100) - pacman.y);
+                            const distB = Math.abs((this.x + b.x * 100) - pacman.x) + Math.abs((this.y + b.y * 100) - pacman.y);
+                            return distA - distB;
+                        });
+                    }
+                }
+
+                this.direction = validDirs[0];
+            }
+
+            canMove(tileX, tileY) {
+                if (tileX < 0 || tileX >= COLS || tileY < 0 || tileY >= ROWS) return true;
+                return map[tileY] && map[tileY][tileX] !== 1;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+
+                if (this.eaten) {
+                    // Just eyes returning home
+                    this.drawEyes();
+                    ctx.restore();
+                    return;
+                }
+
+                const colors = GHOST_COLORS[this.name];
+
+                if (this.scared) {
+                    // Scared ghost (blue, trembling)
+                    ctx.fillStyle = '#2121de';
+                    ctx.shadowColor = '#2121de';
+                } else {
+                    ctx.fillStyle = colors.body;
+                    ctx.shadowColor = colors.body;
+                }
+                ctx.shadowBlur = 10;
+
+                // Ghost body
+                ctx.beginPath();
+                ctx.arc(0, -5, 12, Math.PI, 0, false);
+                ctx.lineTo(12, 10);
+
+                // Wavy bottom
+                const wave = Math.sin(Date.now() / 100) * 2;
+                for (let i = 0; i < 4; i++) {
+                    const x = 12 - i * 8;
+                    ctx.quadraticCurveTo(x - 2, 10 + wave, x - 4, 6);
+                    ctx.quadraticCurveTo(x - 6, 10 - wave, x - 8, 10);
+                }
+
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.shadowBlur = 0;
+
+                if (this.scared) {
+                    // Scared face
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath();
+                    ctx.arc(-4, -5, 3, 0, Math.PI * 2);
+                    ctx.arc(4, -5, 3, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Wavy mouth
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(-6, 3);
+                    for (let i = 0; i < 4; i++) {
+                        ctx.lineTo(-6 + i * 4, i % 2 === 0 ? 3 : 6);
+                    }
+                    ctx.stroke();
+                } else {
+                    this.drawEyes();
+                }
+
+                ctx.restore();
+            }
+
+            drawEyes() {
+                // Eyes
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.ellipse(-4, -5, 4, 5, 0, 0, Math.PI * 2);
+                ctx.ellipse(4, -5, 4, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Pupils
+                ctx.fillStyle = '#00f';
+                ctx.beginPath();
+                ctx.arc(-4 + this.eyeOffset.x, -5 + this.eyeOffset.y, 2, 0, Math.PI * 2);
+                ctx.arc(4 + this.eyeOffset.x, -5 + this.eyeOffset.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Game functions
+        function initGame() {
+            // Copy map
+            map = originalMap.map(row => [...row]);
+
+            pacman = new Pacman();
+            ghosts = [
+                new Ghost('blinky', 14 * TILE_SIZE, 11 * TILE_SIZE),
+                new Ghost('pinky', 12 * TILE_SIZE, 14 * TILE_SIZE),
+                new Ghost('inky', 14 * TILE_SIZE, 14 * TILE_SIZE),
+                new Ghost('clyde', 16 * TILE_SIZE, 14 * TILE_SIZE)
+            ];
+
+            score = 0;
+            lives = 3;
+            level = 1;
+            superSaiyanMode = false;
+            superSaiyanTimer = 0;
+            particles = [];
+            auraParticles = [];
+
+            // Count dots
+            dotsRemaining = 0;
+            for (let row of map) {
+                for (let cell of row) {
+                    if (cell === 2 || cell === 3) dotsRemaining++;
+                }
+            }
+
+            updateUI();
+        }
 
         function startGame() {
-            document.getElementById('title-screen').style.display = 'none';
-            gameState.phase = 'prologue';
-            gameState.currentScene = 0;
-            gameState.dialogueIndex = 0;
-            showDialogueBox();
-            playScene('prologue');
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-over-screen').style.display = 'none';
+
+            initGame();
+
+            if (gameLoop) cancelAnimationFrame(gameLoop);
+            gameLoop = requestAnimationFrame(update);
         }
 
-        function showDialogueBox() {
-            document.getElementById('dialogue-box').style.display = 'block';
-        }
+        function activateSuperSaiyan() {
+            superSaiyanMode = true;
+            superSaiyanTimer = 600; // ~10 seconds
+            document.body.classList.add('saiyan-mode');
+            document.getElementById('power-indicator').classList.add('active');
 
-        function hideDialogueBox() {
-            document.getElementById('dialogue-box').style.display = 'none';
-        }
-
-        function setBackground(bg) {
-            const bgElement = document.getElementById('background');
-            bgElement.className = 'background bg-' + bg;
-        }
-
-        function displayCharacters(charList) {
-            const container = document.getElementById('character-container');
-            container.innerHTML = '';
-
-            charList.forEach((charId, index) => {
-                if (charId === 'sakura_dead') {
-                    // Dead Sakura
-                    const charDiv = document.createElement('div');
-                    charDiv.className = 'character dead';
-                    charDiv.innerHTML = characters.sakura.sprite;
-                    charDiv.style.transform = 'rotate(90deg) translateY(100px)';
-                    charDiv.style.opacity = '0.7';
-                    container.appendChild(charDiv);
-                } else if (characters[charId]) {
-                    const charDiv = document.createElement('div');
-                    charDiv.className = 'character';
-                    charDiv.id = 'char-' + charId;
-                    charDiv.innerHTML = characters[charId].sprite;
-                    container.appendChild(charDiv);
-                }
-            });
-        }
-
-        function highlightSpeaker(speakerName) {
-            document.querySelectorAll('.character').forEach(char => {
-                char.classList.remove('speaking');
-            });
-
-            for (let id in characters) {
-                if (characters[id].name === speakerName) {
-                    const charElement = document.getElementById('char-' + id);
-                    if (charElement) {
-                        charElement.classList.add('speaking');
-                    }
-                    break;
-                }
+            // Create transformation particles
+            for (let i = 0; i < 30; i++) {
+                particles.push({
+                    x: pacman.x,
+                    y: pacman.y,
+                    vx: (Math.random() - 0.5) * 10,
+                    vy: (Math.random() - 0.5) * 10,
+                    life: 1,
+                    color: Math.random() < 0.5 ? '#ffd700' : '#ff8c00'
+                });
             }
         }
 
-        function typeText(element, text, speed = 30) {
-            return new Promise(resolve => {
-                element.textContent = '';
-                let i = 0;
-                const interval = setInterval(() => {
-                    if (i < text.length) {
-                        element.textContent += text[i];
-                        i++;
+        function deactivateSuperSaiyan() {
+            superSaiyanMode = false;
+            document.body.classList.remove('saiyan-mode');
+            document.getElementById('power-indicator').classList.remove('active');
+        }
+
+        function update() {
+            // Update Super Saiyan timer
+            if (superSaiyanMode) {
+                superSaiyanTimer--;
+                if (superSaiyanTimer <= 0) {
+                    deactivateSuperSaiyan();
+                }
+            }
+
+            pacman.update();
+
+            for (let ghost of ghosts) {
+                ghost.update();
+                checkCollision(ghost);
+            }
+
+            // Update particles
+            particles = particles.filter(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.02;
+                return p.life > 0;
+            });
+
+            auraParticles = auraParticles.filter(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.03;
+                return p.life > 0;
+            });
+
+            // Check win condition
+            if (dotsRemaining <= 0) {
+                level++;
+                initGame();
+            }
+
+            draw();
+            gameLoop = requestAnimationFrame(update);
+        }
+
+        function checkCollision(ghost) {
+            const dx = pacman.x - ghost.x;
+            const dy = pacman.y - ghost.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 15) {
+                if (superSaiyanMode && !ghost.eaten) {
+                    // Eat ghost
+                    ghost.eaten = true;
+                    score += 200;
+                    updateUI();
+
+                    // Explosion particles
+                    for (let i = 0; i < 15; i++) {
+                        particles.push({
+                            x: ghost.x,
+                            y: ghost.y,
+                            vx: (Math.random() - 0.5) * 8,
+                            vy: (Math.random() - 0.5) * 8,
+                            life: 1,
+                            color: GHOST_COLORS[ghost.name].body
+                        });
+                    }
+                } else if (!ghost.eaten && !ghost.scared) {
+                    // Pacman dies
+                    lives--;
+                    updateUI();
+
+                    if (lives <= 0) {
+                        gameOver();
                     } else {
-                        clearInterval(interval);
-                        resolve();
+                        pacman.reset();
+                        ghosts.forEach(g => g.reset());
+                        deactivateSuperSaiyan();
                     }
-                }, speed);
-            });
-        }
-
-        async function playScene(sceneName) {
-            const scene = story[sceneName];
-            if (!scene || gameState.dialogueIndex >= scene.length) {
-                advancePhase();
-                return;
-            }
-
-            const dialogue = scene[gameState.dialogueIndex];
-
-            if (dialogue.bg) {
-                setBackground(dialogue.bg);
-            }
-
-            if (dialogue.chars) {
-                displayCharacters(dialogue.chars);
-            }
-
-            if (dialogue.type === 'accusation') {
-                showAccusationChoice(dialogue);
-                return;
-            }
-
-            const speakerElement = document.getElementById('speaker-name');
-            const textElement = document.getElementById('dialogue-text');
-
-            speakerElement.textContent = dialogue.speaker;
-            if (dialogue.speaker && characters[dialogue.speaker.toLowerCase()]) {
-                speakerElement.style.color = characters[dialogue.speaker.toLowerCase()].color;
-            } else {
-                speakerElement.style.color = '#ffd700';
-            }
-
-            highlightSpeaker(dialogue.speaker);
-            await typeText(textElement, dialogue.text);
-        }
-
-        function showAccusationChoice(dialogue) {
-            const speakerElement = document.getElementById('speaker-name');
-            const textElement = document.getElementById('dialogue-text');
-
-            speakerElement.textContent = dialogue.speaker;
-            textElement.textContent = dialogue.text;
-
-            const choicesContainer = document.getElementById('choices-container');
-            choicesContainer.innerHTML = '';
-            choicesContainer.style.display = 'flex';
-
-            dialogue.choices.forEach(charId => {
-                const btn = document.createElement('button');
-                btn.className = 'choice-button';
-                btn.textContent = characters[charId].name;
-                btn.onclick = () => makeAccusation(charId);
-                choicesContainer.appendChild(btn);
-            });
-        }
-
-        function makeAccusation(charId) {
-            document.getElementById('choices-container').style.display = 'none';
-            gameState.accusation = charId;
-
-            if (charId === 'akira') {
-                // Correct!
-                showTruthBullet("COUPABLE IDENTIFIÉ!");
-                setTimeout(() => {
-                    gameState.phase = 'trial_correct';
-                    gameState.dialogueIndex = 0;
-                    playScene('trial_correct');
-                }, 1500);
-            } else {
-                // Wrong!
-                document.getElementById('game-container').classList.add('shake');
-                setTimeout(() => {
-                    document.getElementById('game-container').classList.remove('shake');
-                }, 500);
-                gameState.phase = 'trial_wrong';
-                gameState.dialogueIndex = 0;
-                playScene('trial_wrong');
+                }
             }
         }
 
-        function showTruthBullet(text) {
-            const bullet = document.createElement('div');
-            bullet.className = 'truth-bullet';
-            bullet.textContent = text;
-            document.getElementById('game-container').appendChild(bullet);
-
-            setTimeout(() => bullet.remove(), 1500);
+        function gameOver() {
+            cancelAnimationFrame(gameLoop);
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('game-over-screen').style.display = 'flex';
+            deactivateSuperSaiyan();
         }
 
-        function showPhaseBanner(text) {
-            const banner = document.getElementById('phase-banner');
-            banner.textContent = text;
-            banner.classList.add('show-banner');
+        function draw() {
+            // Clear
+            ctx.fillStyle = COLORS.background;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            setTimeout(() => {
-                banner.classList.remove('show-banner');
-            }, 2000);
-        }
+            // Draw map
+            for (let row = 0; row < ROWS; row++) {
+                for (let col = 0; col < COLS; col++) {
+                    const tile = map[row][col];
+                    const x = col * TILE_SIZE;
+                    const y = row * TILE_SIZE;
 
-        function advancePhase() {
-            switch(gameState.phase) {
-                case 'prologue':
-                    gameState.phase = 'daily';
-                    gameState.dialogueIndex = 0;
-                    playScene('daily');
-                    break;
-                case 'daily':
-                    gameState.phase = 'discovery';
-                    gameState.dialogueIndex = 0;
-                    playScene('discovery');
-                    break;
-                case 'discovery':
-                    gameState.phase = 'investigation';
-                    gameState.dialogueIndex = 0;
-                    showPhaseBanner("INVESTIGATION");
-                    setTimeout(() => startInvestigation(), 2000);
-                    break;
-                case 'investigation':
-                    if (gameState.evidence.length >= 6) {
-                        gameState.phase = 'trial_intro';
-                        gameState.dialogueIndex = 0;
-                        hideInvestigationUI();
-                        playScene('trial_intro');
+                    if (tile === 1) {
+                        // Wall with glow effect
+                        ctx.fillStyle = COLORS.wall;
+                        ctx.shadowColor = COLORS.wallGlow;
+                        ctx.shadowBlur = 5;
+                        ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
+                        ctx.shadowBlur = 0;
+                    } else if (tile === 2) {
+                        // Small dot
+                        ctx.fillStyle = COLORS.dot;
+                        ctx.shadowColor = COLORS.dot;
+                        ctx.shadowBlur = 5;
+                        ctx.beginPath();
+                        ctx.arc(x + TILE_SIZE / 2, y + TILE_SIZE / 2, 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    } else if (tile === 3) {
+                        // Power pellet (pulsing)
+                        const pulse = Math.sin(Date.now() / 200) * 2 + 6;
+                        ctx.fillStyle = COLORS.powerPellet;
+                        ctx.shadowColor = '#fff';
+                        ctx.shadowBlur = 15;
+                        ctx.beginPath();
+                        ctx.arc(x + TILE_SIZE / 2, y + TILE_SIZE / 2, pulse, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
                     }
-                    break;
-                case 'trial_intro':
-                    gameState.phase = 'trial';
-                    gameState.dialogueIndex = 0;
-                    showPhaseBanner("PROCÈS");
-                    setTimeout(() => playScene('trial'), 2000);
-                    break;
-                case 'trial_correct':
-                    showEndScreen(true);
-                    break;
-                case 'trial_wrong':
-                    showEndScreen(false);
-                    break;
-            }
-        }
-
-        function startInvestigation() {
-            hideDialogueBox();
-            setBackground('library');
-            displayCharacters([]);
-
-            document.getElementById('investigation-ui').style.display = 'block';
-
-            createClickableAreas();
-        }
-
-        function createClickableAreas() {
-            const container = document.getElementById('game-container');
-
-            const areas = [
-                { id: 'body', x: '40%', y: '50%', w: '120px', h: '80px', evidence: 'body' },
-                { id: 'macaron', x: '55%', y: '60%', w: '60px', h: '40px', evidence: 'macaron' },
-                { id: 'book', x: '25%', y: '45%', w: '80px', h: '60px', evidence: 'book' },
-                { id: 'kitchen-link', x: '80%', y: '30%', w: '100px', h: '80px', text: '→ Cuisine' },
-                { id: 'diary-link', x: '10%', y: '30%', w: '100px', h: '80px', text: '→ Chambre Sakura' }
-            ];
-
-            areas.forEach(area => {
-                if (document.getElementById('area-' + area.id)) return;
-
-                const div = document.createElement('div');
-                div.id = 'area-' + area.id;
-                div.className = 'clickable-area';
-                div.style.left = area.x;
-                div.style.top = area.y;
-                div.style.width = area.w;
-                div.style.height = area.h;
-
-                if (area.text) {
-                    div.textContent = area.text;
-                    div.style.color = '#ffd700';
-                    div.style.display = 'flex';
-                    div.style.alignItems = 'center';
-                    div.style.justifyContent = 'center';
-                    div.style.fontFamily = 'Orbitron';
-                    div.style.backgroundColor = 'rgba(0,0,0,0.7)';
-                    div.style.borderRadius = '10px';
-                }
-
-                if (area.evidence) {
-                    div.onclick = () => findEvidence(area.evidence);
-                } else if (area.id === 'kitchen-link') {
-                    div.onclick = () => goToKitchen();
-                } else if (area.id === 'diary-link') {
-                    div.onclick = () => goToDiary();
-                }
-
-                container.appendChild(div);
-            });
-        }
-
-        function clearClickableAreas() {
-            document.querySelectorAll('.clickable-area').forEach(el => el.remove());
-        }
-
-        function goToKitchen() {
-            clearClickableAreas();
-            setBackground('kitchen');
-
-            const container = document.getElementById('game-container');
-
-            const areas = [
-                { id: 'poison', x: '60%', y: '40%', w: '60px', h: '80px', evidence: 'poison' },
-                { id: 'mei-talk', x: '30%', y: '35%', w: '100px', h: '150px', text: 'Parler à Mei' },
-                { id: 'back-library', x: '10%', y: '80%', w: '120px', h: '60px', text: '← Bibliothèque' }
-            ];
-
-            displayCharacters(['mei']);
-
-            areas.forEach(area => {
-                const div = document.createElement('div');
-                div.id = 'area-' + area.id;
-                div.className = 'clickable-area';
-                div.style.left = area.x;
-                div.style.top = area.y;
-                div.style.width = area.w;
-                div.style.height = area.h;
-
-                if (area.text) {
-                    div.textContent = area.text;
-                    div.style.color = '#ffd700';
-                    div.style.display = 'flex';
-                    div.style.alignItems = 'center';
-                    div.style.justifyContent = 'center';
-                    div.style.fontFamily = 'Orbitron';
-                    div.style.backgroundColor = 'rgba(0,0,0,0.7)';
-                    div.style.borderRadius = '10px';
-                }
-
-                if (area.evidence) {
-                    div.onclick = () => findEvidence(area.evidence);
-                } else if (area.id === 'mei-talk') {
-                    div.onclick = () => findEvidence('testimony');
-                } else if (area.id === 'back-library') {
-                    div.onclick = () => backToLibrary();
-                }
-
-                container.appendChild(div);
-            });
-        }
-
-        function goToDiary() {
-            clearClickableAreas();
-            setBackground('academy');
-            displayCharacters([]);
-
-            const container = document.getElementById('game-container');
-
-            const areas = [
-                { id: 'diary', x: '50%', y: '50%', w: '100px', h: '80px', evidence: 'diary' },
-                { id: 'back-library2', x: '10%', y: '80%', w: '120px', h: '60px', text: '← Bibliothèque' }
-            ];
-
-            areas.forEach(area => {
-                const div = document.createElement('div');
-                div.id = 'area-' + area.id;
-                div.className = 'clickable-area';
-                div.style.left = area.x;
-                div.style.top = area.y;
-                div.style.width = area.w;
-                div.style.height = area.h;
-
-                if (area.text) {
-                    div.textContent = area.text;
-                    div.style.color = '#ffd700';
-                    div.style.display = 'flex';
-                    div.style.alignItems = 'center';
-                    div.style.justifyContent = 'center';
-                    div.style.fontFamily = 'Orbitron';
-                    div.style.backgroundColor = 'rgba(0,0,0,0.7)';
-                    div.style.borderRadius = '10px';
-                }
-
-                if (area.evidence) {
-                    div.onclick = () => findEvidence(area.evidence);
-                } else if (area.id === 'back-library2') {
-                    div.onclick = () => backToLibrary();
-                }
-
-                container.appendChild(div);
-            });
-        }
-
-        function backToLibrary() {
-            clearClickableAreas();
-            setBackground('library');
-            displayCharacters([]);
-            createClickableAreas();
-        }
-
-        function findEvidence(evidenceId) {
-            if (gameState.evidence.includes(evidenceId)) {
-                showEvidencePopup(evidenceId, true);
-                return;
-            }
-
-            gameState.evidence.push(evidenceId);
-            document.getElementById('evidence-num').textContent = gameState.evidence.length;
-
-            showEvidencePopup(evidenceId, false);
-
-            // Hide the clicked area
-            const areaElement = document.getElementById('area-' + evidenceId);
-            if (areaElement) {
-                areaElement.style.display = 'none';
-            }
-
-            if (gameState.evidence.length >= 6) {
-                setTimeout(() => {
-                    hideDialogueBox();
-                    advancePhase();
-                }, 1000);
-            }
-        }
-
-        function showEvidencePopup(evidenceId, alreadyFound) {
-            const popup = document.getElementById('evidence-popup');
-            const data = evidenceData[evidenceId];
-
-            document.getElementById('evidence-title').textContent =
-                (alreadyFound ? "[Déjà trouvé] " : "[NOUVELLE PREUVE] ") + data.name;
-            document.getElementById('evidence-description').textContent = data.description;
-
-            popup.style.display = 'block';
-        }
-
-        function closeEvidencePopup() {
-            document.getElementById('evidence-popup').style.display = 'none';
-        }
-
-        function hideInvestigationUI() {
-            document.getElementById('investigation-ui').style.display = 'none';
-            clearClickableAreas();
-        }
-
-        function showEndScreen(victory) {
-            hideDialogueBox();
-            const endScreen = document.getElementById('end-screen');
-            const title = document.getElementById('end-title');
-            const text = document.getElementById('end-text');
-
-            endScreen.style.display = 'flex';
-
-            if (victory) {
-                endScreen.className = 'victory';
-                title.textContent = "AFFAIRE CLASSÉE";
-                text.textContent = "Grâce à ton sens de la déduction, le coupable a été démasqué. Sakura peut reposer en paix. Mais le jeu de massacre continue... Qui sera la prochaine victime?";
-            } else {
-                endScreen.className = 'defeat';
-                title.textContent = "GAME OVER";
-                text.textContent = "Tu as accusé la mauvaise personne. Le vrai coupable, Akira, s'est échappé et tous les autres étudiants ont été exécutés. La vérité meurt avec toi...";
-            }
-        }
-
-        // ==================== EVENT LISTENERS ====================
-
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.menu-button') ||
-                e.target.closest('.choice-button') ||
-                e.target.closest('.clickable-area') ||
-                e.target.closest('.evidence-item') ||
-                e.target.closest('#evidence-popup')) {
-                return;
-            }
-
-            if (gameState.phase === 'investigation') {
-                return;
-            }
-
-            if (document.getElementById('dialogue-box').style.display !== 'none') {
-                gameState.dialogueIndex++;
-
-                const currentScene = story[gameState.phase];
-                if (currentScene && gameState.dialogueIndex < currentScene.length) {
-                    playScene(gameState.phase);
-                } else {
-                    advancePhase();
                 }
             }
-        });
 
+            // Draw aura particles
+            for (let p of auraParticles) {
+                ctx.fillStyle = `rgba(255, 215, 0, ${p.life})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Draw particles
+            for (let p of particles) {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.life;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+
+            // Draw ghosts
+            for (let ghost of ghosts) {
+                ghost.draw();
+            }
+
+            // Draw Pacman
+            pacman.draw();
+        }
+
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('level').textContent = level;
+            document.getElementById('lives').textContent = lives;
+        }
+
+        // Controls
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' || e.code === 'Enter') {
-                document.dispatchEvent(new Event('click'));
+            switch (e.key) {
+                case 'ArrowUp':
+                case 'z':
+                case 'Z':
+                    pacman.nextDirection = { x: 0, y: -1 };
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    pacman.nextDirection = { x: 0, y: 1 };
+                    break;
+                case 'ArrowLeft':
+                case 'q':
+                case 'Q':
+                    pacman.nextDirection = { x: -1, y: 0 };
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    pacman.nextDirection = { x: 1, y: 0 };
+                    break;
             }
         });
     </script>
