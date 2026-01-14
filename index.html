@@ -302,12 +302,12 @@
     <div class="container">
         <div class="header">
             <h1>Quiz - Programmation Orientée Objet</h1>
-            <p>20 questions sur les concepts fondamentaux de la POO</p>
+            <p>36 questions sur les concepts fondamentaux de la POO</p>
         </div>
 
         <div class="score-bar">
             <div class="score">
-                Score : <span class="score-value" id="score">0</span> / <span id="total">20</span>
+                Score : <span class="score-value" id="score">0</span> / <span id="total">36</span>
             </div>
             <button class="btn-reset" onclick="resetQuiz()">
                 <i class="fas fa-redo"></i>
@@ -1035,10 +1035,578 @@
                     <div class="feedback"></div>
                 </div>
             </div>
+
+            <!-- Question 21 -->
+            <div class="question-card" data-question="21" data-answer="b" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">21</div>
+                    <div>
+                        <div class="question-text">Qu'est-ce qu'un effet de bord ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q21" value="a">
+                        <span class="answer-label">a. un effet imprévu de l'exécution d'un programme</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q21" value="b">
+                        <span class="answer-label">b. une modification de l'état général du programme suite à l'exécution d'une instruction</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q21" value="c">
+                        <span class="answer-label">c. une instruction survenant au début ou à la fin d'un programme</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q21" value="d">
+                        <span class="answer-label">d. les entrées d'un programme (par exemple ses options), ou sa sortie</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(21)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 22 -->
+            <div class="question-card" data-question="22" data-answer="b" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">22</div>
+                    <div>
+                        <div class="question-text">Pour quelles raisons la surcharge est-elle utile ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q22" value="a">
+                        <span class="answer-label">a. aucune de ces réponses n'est correcte</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q22" value="b">
+                        <span class="answer-label">b. faire des choses légèrement différentes</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q22" value="c">
+                        <span class="answer-label">c. économiser des identifiants en utilisant un même nom pour des choses différentes</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q22" value="d">
+                        <span class="answer-label">d. faire une chose de différentes manières</span>
+                    </label>
+                    <label class="answer-option" data-value="e">
+                        <input type="radio" name="q22" value="e">
+                        <span class="answer-label">e. pour remplacer une abstraction par une autre</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(22)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 23 -->
+            <div class="question-card" data-question="23" data-answer="a" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">23</div>
+                    <div>
+                        <div class="question-text">Qu'appelle-t-on « attribut d'instance » ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q23" value="a">
+                        <span class="answer-label">a. un attribut ayant une valeur par objet</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q23" value="b">
+                        <span class="answer-label">b. un attribut n'étant pas défini dans une classe</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q23" value="c">
+                        <span class="answer-label">c. un attribut n'existant que dans un seul objet</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q23" value="d">
+                        <span class="answer-label">d. un attribut ayant la même valeur dans tous les objets</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(23)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 24 -->
+            <div class="question-card" data-question="24" data-answer="d" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">24</div>
+                    <div>
+                        <div class="question-text">Dans l'agrégation simple :</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q24" value="a">
+                        <span class="answer-label">a. l'agrégat ne possède qu'un seul agrégé</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q24" value="b">
+                        <span class="answer-label">b. l'agrégé ne survit pas à son agrégat</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q24" value="c">
+                        <span class="answer-label">c. l'agrégé n'appartient qu'à un seul agrégat</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q24" value="d">
+                        <span class="answer-label">d. l'agrégé survit à son agrégat</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(24)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 25 -->
+            <div class="question-card" data-question="25" data-answer="d" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">25</div>
+                    <div>
+                        <div class="question-text">Dans un langage de programmation, une classe se comporte comme :</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q25" value="a">
+                        <span class="answer-label">a. une variable</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q25" value="b">
+                        <span class="answer-label">b. une valeur</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q25" value="c">
+                        <span class="answer-label">c. une unité de compilation</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q25" value="d">
+                        <span class="answer-label">d. un type de données</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(25)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 26 -->
+            <div class="question-card" data-question="26" data-answer="b" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">26</div>
+                    <div>
+                        <div class="question-text">Un langage de programmation est dit "Turing-complet" si :</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q26" value="a">
+                        <span class="answer-label">a. il remplit toutes les fonctionnalités requises dans son cahier des charges</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q26" value="b">
+                        <span class="answer-label">b. on peut calculer tout ce qui est calculable</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q26" value="c">
+                        <span class="answer-label">c. on peut prouver qu'il est correct</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q26" value="d">
+                        <span class="answer-label">d. on peut calculer tout ce qui est calculable avec un autre langage</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(26)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 27 -->
+            <div class="question-card" data-question="27" data-answer="a" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">27</div>
+                    <div>
+                        <div class="question-text">Qu'est-ce qu'une méthode virtuelle pure ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q27" value="a">
+                        <span class="answer-label">a. c'est un autre nom pour les méthodes abstraites</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q27" value="b">
+                        <span class="answer-label">b. une méthode virtuelle qui n'est jamais ré-écrite</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q27" value="c">
+                        <span class="answer-label">c. une méthode virtuelle et statique à la fois</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q27" value="d">
+                        <span class="answer-label">d. une méthode virtuelle qui n'est jamais surchargée</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(27)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 28 -->
+            <div class="question-card" data-question="28" data-answer="c" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">28</div>
+                    <div>
+                        <div class="question-text">Qu'est-ce que le concept de sous-typage ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q28" value="a">
+                        <span class="answer-label">a. une relation d'équivalence entre deux classes</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q28" value="b">
+                        <span class="answer-label">b. une relation hiérarchique entre deux classes sans contrainte de comportement</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q28" value="c">
+                        <span class="answer-label">c. une relation où un type peut être utilisé partout où un autre type est attendu, sans altérer le comportement du programme</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q28" value="d">
+                        <span class="answer-label">d. une technique permettant de remplacer un objet par un autre à l'exécution</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(28)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 29 -->
+            <div class="question-card" data-question="29" data-answer="c" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">29</div>
+                    <div>
+                        <div class="question-text">Qu'appelle-t-on un « finaliseur » ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q29" value="a">
+                        <span class="answer-label">a. une méthode de finalisation des attributs, lors de l'instanciation</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q29" value="b">
+                        <span class="answer-label">b. une méthode de désallocation de la mémoire utilisée par un objet</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q29" value="c">
+                        <span class="answer-label">c. une méthode analogue à un destructeur, mais utilisée par le ramasse-miettes</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q29" value="d">
+                        <span class="answer-label">d. une méthode de désallocation de la mémoire inutilisée par un objet</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(29)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 30 -->
+            <div class="question-card" data-question="30" data-answer="d" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">30</div>
+                    <div>
+                        <div class="question-text">Qu'est-ce que le masquage ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q30" value="a">
+                        <span class="answer-label">a. l'interdiction d'accès aux attributs d'une super-classe</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q30" value="b">
+                        <span class="answer-label">b. la redéfinition dynamique de méthodes dans une sous-classe</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q30" value="c">
+                        <span class="answer-label">c. la redéfinition statique de méthodes dans une sous-classe</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q30" value="d">
+                        <span class="answer-label">d. la redéfinition d'un attribut dans une sous-classe</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(30)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 31 -->
+            <div class="question-card" data-question="31" data-answer="b" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">31</div>
+                    <div>
+                        <div class="question-text">Qu'est-ce que l'héritage en losange ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q31" value="a">
+                        <span class="answer-label">a. deux classes ou plus ayant une classe mère en commun</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q31" value="b">
+                        <span class="answer-label">b. deux branches de l'arbre d'héritage qui se rejoignent pour former un graphe</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q31" value="c">
+                        <span class="answer-label">c. une classe disposant de trois super-classes ou plus</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q31" value="d">
+                        <span class="answer-label">d. un cycle dans le graphe d'héritage</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(31)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 32 -->
+            <div class="question-card" data-question="32" data-answer="d" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">32</div>
+                    <div>
+                        <div class="question-text">Qu'est-ce qu'une classe abstraite ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q32" value="a">
+                        <span class="answer-label">a. une classe non instanciée</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q32" value="b">
+                        <span class="answer-label">b. une classe sans super-classe</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q32" value="c">
+                        <span class="answer-label">c. une classe non dérivable</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q32" value="d">
+                        <span class="answer-label">d. une classe non instanciable</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(32)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 33 -->
+            <div class="question-card" data-question="33" data-answer="b,d" data-type="checkbox">
+                <div class="question-header">
+                    <div class="question-number">33</div>
+                    <div>
+                        <div class="question-text">Quels sont les deux langages de programmation à l'origine du paradigme objet ?</div>
+                        <div class="question-type">Choix multiples</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="checkbox" name="q33" value="a">
+                        <span class="answer-label">a. C++</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="checkbox" name="q33" value="b">
+                        <span class="answer-label">b. Smalltalk</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="checkbox" name="q33" value="c">
+                        <span class="answer-label">c. aucune de ces réponses n'est correcte</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="checkbox" name="q33" value="d">
+                        <span class="answer-label">d. Simula</span>
+                    </label>
+                    <label class="answer-option" data-value="e">
+                        <input type="checkbox" name="q33" value="e">
+                        <span class="answer-label">e. Prolog</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(33)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 34 -->
+            <div class="question-card" data-question="34" data-answer="b" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">34</div>
+                    <div>
+                        <div class="question-text">Si S est un sous-type de T, le principe de substituabilité indique que :</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q34" value="a">
+                        <span class="answer-label">a. il existe une classe correspondante à S et une à T</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q34" value="b">
+                        <span class="answer-label">b. tout terme de type S peut être utilisé comme un terme de type T</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q34" value="c">
+                        <span class="answer-label">c. S est aussi une sous-classe de T</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q34" value="d">
+                        <span class="answer-label">d. tout terme de type T peut être utilisé comme un terme de type S</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(34)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 35 -->
+            <div class="question-card" data-question="35" data-answer="a" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">35</div>
+                    <div>
+                        <div class="question-text">Quels sont les deux types de propriétés des objets du monde réel ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q35" value="a">
+                        <span class="answer-label">a. des propriétés statiques (état) et dynamiques (comportement)</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q35" value="b">
+                        <span class="answer-label">b. des propriétés privées et publiques</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q35" value="c">
+                        <span class="answer-label">c. des propriétés permanentes et temporaires</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q35" value="d">
+                        <span class="answer-label">d. des propriétés privées et partagées</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(35)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Question 36 -->
+            <div class="question-card" data-question="36" data-answer="d" data-type="radio">
+                <div class="question-header">
+                    <div class="question-number">36</div>
+                    <div>
+                        <div class="question-text">Qu'appelle-t-on la « convergence d'état » ?</div>
+                        <div class="question-type">Choix unique</div>
+                    </div>
+                </div>
+                <div class="answers">
+                    <label class="answer-option" data-value="a">
+                        <input type="radio" name="q36" value="a">
+                        <span class="answer-label">a. deux concepts ayant des propriétés en commun</span>
+                    </label>
+                    <label class="answer-option" data-value="b">
+                        <input type="radio" name="q36" value="b">
+                        <span class="answer-label">b. la modification d'un concept pour le faire ressembler à un autre</span>
+                    </label>
+                    <label class="answer-option" data-value="c">
+                        <input type="radio" name="q36" value="c">
+                        <span class="answer-label">c. le clonage d'un objet en une copie semblable</span>
+                    </label>
+                    <label class="answer-option" data-value="d">
+                        <input type="radio" name="q36" value="d">
+                        <span class="answer-label">d. deux objets possédant des caractéristiques identiques (par exemple, même couleur)</span>
+                    </label>
+                </div>
+                <div class="question-actions">
+                    <button class="btn-check" onclick="checkAnswer(36)">
+                        <i class="fas fa-check"></i> Vérifier
+                    </button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
         </div>
 
         <div class="footer">
-            Quiz POO - 20 questions
+            Quiz POO - 36 questions
         </div>
     </div>
 
@@ -1065,7 +1633,23 @@
             17: "c. ensemble / parties",
             18: "a. un attribut de classe",
             19: "c. un attribut ayant la même valeur dans tous les objets d'une classe",
-            20: "d. tout objet d'une classe peut être manipulé comme un objet d'une super-classe"
+            20: "d. tout objet d'une classe peut être manipulé comme un objet d'une super-classe",
+            21: "b. une modification de l'état général du programme suite à l'exécution d'une instruction",
+            22: "b. faire des choses légèrement différentes",
+            23: "a. un attribut ayant une valeur par objet",
+            24: "d. l'agrégé survit à son agrégat",
+            25: "d. un type de données",
+            26: "b. on peut calculer tout ce qui est calculable",
+            27: "a. c'est un autre nom pour les méthodes abstraites",
+            28: "c. une relation où un type peut être utilisé partout où un autre type est attendu, sans altérer le comportement du programme",
+            29: "c. une méthode analogue à un destructeur, mais utilisée par le ramasse-miettes",
+            30: "d. la redéfinition d'un attribut dans une sous-classe",
+            31: "b. deux branches de l'arbre d'héritage qui se rejoignent pour former un graphe",
+            32: "d. une classe non instanciable",
+            33: "b. Smalltalk, d. Simula",
+            34: "b. tout terme de type S peut être utilisé comme un terme de type T",
+            35: "a. des propriétés statiques (état) et dynamiques (comportement)",
+            36: "d. deux objets possédant des caractéristiques identiques (par exemple, même couleur)"
         };
 
         document.querySelectorAll('.answer-option').forEach(option => {
